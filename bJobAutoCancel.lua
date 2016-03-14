@@ -47,6 +47,12 @@ local c_Arcs = {
     [1233] = "Kisuton",     -- Earthbound Interference
 }
 
+local c_IconsToFactions = {
+    [271169] = "Astrek",
+    [271174] = "Kisuton",
+    [271173] = "Omnidyne",
+}
+
 
 -- =============================================================================
 --  Functions
@@ -115,19 +121,30 @@ function OnArcStatusChanged(args)
     Debug.Table("OnArcStatusChanged()", args)
 
     if (io_Settings.Enabled and args.arc) then
-        if (c_Arcs[tonumber(args.arc)] and io_Settings.Factions[c_Arcs[tonumber(args.arc)]]) then
-            if (io_Settings.Notification) then
-                local jobStatus = Player.GetJobStatus()
+        local factionName = ""
+        local jobStatus = Player.GetJobStatus()
+        local shouldCancel = false
 
+        if (c_Arcs[tonumber(args.arc)] and io_Settings.Factions[c_Arcs[tonumber(args.arc)]]) then
+            Debug.Log("Canceling job (blacklist):", args.arc)
+            factionName = c_Arcs[tonumber(args.arc)]
+            shouldCancel = true
+        elseif (jobStatus and jobStatus.job and jobStatus.job.icon_id and io_Settings.Factions[c_IconsToFactions[tonumber(jobStatus.job.icon_id)]]) then
+            Debug.Log("Canceling job (icon_id):", args.arc)
+            factionName = c_IconsToFactions[tonumber(jobStatus.job.icon_id)]
+            shouldCancel = true
+        end
+
+        if (shouldCancel) then
+            if (io_Settings.Notification) then
                 if (jobStatus and jobStatus.job and jobStatus.job.name) then
-                    Notification("Canceling job " .. tostring(args.arc) .. ": " .. tostring(jobStatus.job.name) .. " (" .. tostring(c_Arcs[tonumber(args.arc)]) .. ")")
+                    Notification("Canceling job " .. tostring(args.arc) .. ": " .. tostring(jobStatus.job.name) .. " (" .. tostring(factionName) .. ")")
                 else
                     Debug.Warn("Missing jobStatus")
-                    Notification("Canceling job " .. tostring(args.arc) .. ": <unknown> (" .. tostring(c_Arcs[tonumber(args.arc)]) .. ")")
+                    Notification("Canceling job " .. tostring(args.arc) .. ": <unknown> (" .. tostring(factionName) .. ")")
                 end
             end
 
-            Debug.Log("Canceling job:", args.arc)
             Game.RequestCancelArc(args.arc)
         end
     end
