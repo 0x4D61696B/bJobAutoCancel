@@ -26,6 +26,9 @@ local c_Arcs = {
     -- Sertao, Dredge
     [1205] = "Omnidyne",    -- The Fifth Son
 
+    -- Sertao, Watchtower: Sea of Dunes
+    [1211] = "Astrek",      -- Blue Gold I
+
     -- Sertao, Andreev Station
     [1185] = "Astrek",      -- Buzzards on our Backs
     [1188] = "Astrek",      -- Combing the Desert
