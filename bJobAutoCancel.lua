@@ -68,27 +68,32 @@ end
 -- =============================================================================
 
 local io_Settings = {
-    Enabled = false,
-    Notification = false,
-    Debug = false,
-    Factions = {
-        Astrek = false,
-        Kisuton = false,
-        Omnidyne = false
+    Enabled         = false,
+    Notification    = false,
+    Debug           = false,
+    Factions        = {
+        Astrek      = false,
+        Kisuton     = false,
+        Omnidyne    = false
     }
 }
 
 function OnOptionChanged(id, value)
     if (id == "DEBUG_ENABLE") then
         Debug.EnableLogging(value)
+
     elseif (id == "GENERAL_ENABLE") then
         io_Settings.Enabled = value
+
     elseif (id == "GENERAL_NOTIFICATION") then
         io_Settings.Notification = value
+
     elseif (id == "FACTION_ASTREK") then
         io_Settings.Factions.Astrek = value
+
     elseif (id == "FACTION_KISUTON") then
         io_Settings.Factions.Kisuton = value
+
     elseif (id == "FACTION_OMNIDYNE") then
         io_Settings.Factions.Omnidyne = value
     end
@@ -121,24 +126,28 @@ function OnArcStatusChanged(args)
     Debug.Table("OnArcStatusChanged()", args)
 
     if (io_Settings.Enabled and args.arc) then
-        local factionName = ""
-        local jobStatus = Player.GetJobStatus()
-        local shouldCancel = false
+        local factionName   = ""
+        local jobStatus     = Player.GetJobStatus()
+        local shouldCancel  = false
 
         if (c_Arcs[tonumber(args.arc)] and io_Settings.Factions[c_Arcs[tonumber(args.arc)]]) then
             Debug.Log("Canceling job (blacklist):", args.arc)
-            factionName = c_Arcs[tonumber(args.arc)]
-            shouldCancel = true
+
+            factionName     = c_Arcs[tonumber(args.arc)]
+            shouldCancel    = true
+
         elseif (jobStatus and jobStatus.job and jobStatus.job.icon_id and io_Settings.Factions[c_IconsToFactions[tonumber(jobStatus.job.icon_id)]]) then
             Debug.Log("Canceling job (icon_id):", args.arc)
-            factionName = c_IconsToFactions[tonumber(jobStatus.job.icon_id)]
-            shouldCancel = true
+
+            factionName     = c_IconsToFactions[tonumber(jobStatus.job.icon_id)] .. "*"
+            shouldCancel    = true
         end
 
         if (shouldCancel) then
             if (io_Settings.Notification) then
                 if (jobStatus and jobStatus.job and jobStatus.job.name) then
                     Notification("Canceling job " .. tostring(args.arc) .. ": " .. tostring(jobStatus.job.name) .. " (" .. tostring(factionName) .. ")")
+
                 else
                     Debug.Warn("Missing jobStatus")
                     Notification("Canceling job " .. tostring(args.arc) .. ": <unknown> (" .. tostring(factionName) .. ")")

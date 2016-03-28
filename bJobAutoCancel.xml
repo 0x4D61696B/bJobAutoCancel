@@ -14,7 +14,7 @@
     />
 
     <Events>
-        <Event name="ON_COMPONENT_LOAD"         bind="OnComponentLoad" />
-        <Event name="ON_ARC_STATUS_CHANGED"     bind="OnArcStatusChanged" />
+        <Event name="ON_COMPONENT_LOAD"         bind="OnComponentLoad"      />
+        <Event name="ON_ARC_STATUS_CHANGED"     bind="OnArcStatusChanged"   />
     </Events>
 </Component>
