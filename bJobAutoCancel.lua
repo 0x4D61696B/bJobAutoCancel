@@ -6,6 +6,7 @@
 require "math"
 require "table"
 require "unicode"
+
 require "lib/lib_ChatLib"
 require "lib/lib_Debug"
 require "lib/lib_InterfaceOptions"
@@ -67,10 +68,10 @@ end
 --  Interface Options
 -- =============================================================================
 
-local io_Settings = {
+local io_Settings   = {
+    Debug           = false,
     Enabled         = false,
     Notification    = false,
-    Debug           = false,
     Factions        = {
         Astrek      = false,
         Kisuton     = false,
@@ -102,14 +103,38 @@ end
 do
     InterfaceOptions.SaveVersion(1)
 
-    InterfaceOptions.AddCheckBox({id = "GENERAL_ENABLE", label = "Addon enabled", default = io_Settings.Enabled})
-    InterfaceOptions.AddCheckBox({id = "GENERAL_NOTIFICATION", label = "Show notification in chat", default = io_Settings.Notification})
-    InterfaceOptions.AddCheckBox({id = "DEBUG_ENABLE", label = "Debug mode", default = io_Settings.Debug})
+    InterfaceOptions.AddCheckBox({
+        id      = "GENERAL_ENABLE",
+        label   = "Addon enabled",
+        default = io_Settings.Enabled
+    })
+    InterfaceOptions.AddCheckBox({
+        id      = "GENERAL_NOTIFICATION",
+        label   = "Show notification in chat",
+        default = io_Settings.Notification
+    })
+    InterfaceOptions.AddCheckBox({
+        id      = "DEBUG_ENABLE",
+        label   = "Debug mode",
+        default = io_Settings.Debug
+    })
 
     InterfaceOptions.StartGroup({label = "Factions"})
-        InterfaceOptions.AddCheckBox({id = "FACTION_ASTREK", label = "Astrek Association", default = io_Settings.Factions.Astrek})
-        InterfaceOptions.AddCheckBox({id = "FACTION_KISUTON", label = "Kisuton", default = io_Settings.Factions.Kisuton})
-        InterfaceOptions.AddCheckBox({id = "FACTION_OMNIDYNE", label = "Omnidyne-M", default = io_Settings.Factions.Omnidyne})
+        InterfaceOptions.AddCheckBox({
+            id      = "FACTION_ASTREK",
+            label   = "Astrek Association",
+            default = io_Settings.Factions.Astrek
+        })
+        InterfaceOptions.AddCheckBox({
+            id      = "FACTION_KISUTON",
+            label   = "Kisuton",
+            default = io_Settings.Factions.Kisuton
+        })
+        InterfaceOptions.AddCheckBox({
+            id      = "FACTION_OMNIDYNE",
+            label   = "Omnidyne-M",
+            default = io_Settings.Factions.Omnidyne
+        })
     InterfaceOptions.StopGroup()
 end
 
@@ -123,7 +148,7 @@ function OnComponentLoad()
 end
 
 function OnArcStatusChanged(args)
-    Debug.Table("OnArcStatusChanged()", args)
+    Debug.Event(args)
 
     if (io_Settings.Enabled and args.arc) then
         local factionName   = ""
